@@ -240,7 +240,10 @@ let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 " https://github.com/c9s/perlomni.vim
 let g:neocomplcache_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
-
+" For rank priority setting in the popup list
+let g:neocomplcache_source_rank = {
+			\'snippets_complete' : 4,
+			\ }
 
 
 
@@ -330,35 +333,35 @@ autocmd FileType python nmap <buffer> <F5> :w<CR>:!python.exe %<CR>
 
 "vdebug(调试python)插件快捷键
 let g:vdebug_keymap = {
-    \    "run" : "<S-F5>",
-    \    "run_to_cursor" : "<S-F1>",
-    \    "step_over" : "<S-F2>",
-    \    "step_into" : "<S-F3>",
-    \    "step_out" : "<S-F4>",
-    \    "close" : "<S-F6>",
-    \    "detach" : "<S-F7>",
-    \    "set_breakpoint" : "<S-F9>",
-    \    "get_context" : "<S-F11>",
-    \    "eval_under_cursor" : "<S-F12>",
-    \}
+			\    "run" : "<S-F5>",
+			\    "run_to_cursor" : "<S-F1>",
+			\    "step_over" : "<S-F2>",
+			\    "step_into" : "<S-F3>",
+			\    "step_out" : "<S-F4>",
+			\    "close" : "<S-F6>",
+			\    "detach" : "<S-F7>",
+			\    "set_breakpoint" : "<S-F9>",
+			\    "get_context" : "<S-F11>",
+			\    "eval_under_cursor" : "<S-F12>",
+			\}
 let g:vdebug_options= {
-    \    "port" : 9000,
-    \    "server" : 'localhost',
-    \    "timeout" : 20,
-    \    "on_close" : 'detach',
-    \    "break_on_open" : 0,
-    \    "ide_key" : '',
-    \    "remote_path" : "",
-    \    "local_path" : "",
-    \    "debug_window_level" : 0,
-    \    "debug_file_level" : 0,
-    \    "debug_file" : "",
-    \}
+			\    "port" : 9000,
+			\    "server" : 'localhost',
+			\    "timeout" : 20,
+			\    "on_close" : 'detach',
+			\    "break_on_open" : 0,
+			\    "ide_key" : '',
+			\    "remote_path" : "",
+			\    "local_path" : "",
+			\    "debug_window_level" : 0,
+			\    "debug_file_level" : 0,
+			\    "debug_file" : "",
+			\}
 let g:vdebug_options = {
-\  "marker_default" : '*',
-\  "marker_closed_tree" : '+',
-\  "marker_open_tree" : '-'
-\}
+			\  "marker_default" : '*',
+			\  "marker_closed_tree" : '+',
+			\  "marker_open_tree" : '-'
+			\}
 
 "doxygen toolkit 插件设置：
 let g:DoxygenToolkit_briefTag_pre=""
