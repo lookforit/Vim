@@ -1,0 +1,7 @@
+autoload/vimproc_*.so
+autoload/vimproc_*.dll
+autoload/vimproc_*.exp
+autoload/vimproc_*.lib
+*.obj
+*.o
+*.swp

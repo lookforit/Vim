@@ -1,0 +1,166 @@
+set nocompatible
+source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/mswin.vim
+behave mswin
+colorscheme candycode
+set guifont=consolas:h13
+
+"编码方式设置：
+set encoding=utf-8
+set fileencoding=chinese
+language message zh_CN.utf-8
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
+set diffexpr=MyDiff()
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  let eq = ''
+  if $VIMRUNTIME =~ ' '
+    if &sh =~ '\<cmd'
+      let cmd = '""' . $VIMRUNTIME . '\diff"'
+      let eq = '"'
+    else
+      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    endif
+  else
+    let cmd = $VIMRUNTIME . '\diff'
+  endif
+  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
+endfunction
+source $VIMRUNTIME/macros/matchit.vim
+autocmd BufEnter *.m    compiler mlint
+:set showmatch
+
+ if has("autocmd") && exists("+omnifunc") 
+autocmd Filetype * 
+    \	if &omnifunc == "" | 
+    \	 setlocal omnifunc=syntaxcomplete#Complete | 
+    \	endif 
+    endif
+
+
+
+source $VIMRUNTIME/macros/MakeMatlabComment.vim 
+map <M-c> :call MakeMatlabComment()<CR> 
+imap <M-c> <ESC>:call MakeMatlabComment()<CR>
+
+au GUIEnter * simalt ~x	"Maxmize the startup window
+set nobackup
+set ignorecase smartcase
+set report=0
+
+if has("gui_running")
+    set guioptions-=m " 隐藏菜单栏
+    set guioptions-=T " 隐藏工具栏
+    set guioptions-=L " 隐藏左侧滚动条
+    set guioptions-=r " 隐藏右侧滚动条
+    set guioptions-=b " 隐藏底部滚动条
+   " set showtabline=0 " 隐藏Tab栏
+endif
+
+"keys map:
+
+
+" 插入模式下上下左右移动光标
+inoremap <s-h> <left>
+inoremap <s-l> <right>
+inoremap <s-j> <c-o>gj
+inoremap <s-k> <c-o>gk
+
+"normal模式下换行：
+map <c-CR>  :put=''<CR>
+
+"关闭一个buffer：
+map <m-q>   :q<CR>
+
+"复制到剪贴板:
+vmap <F3> "+y
+
+"删除或复制到括号中的内容，Shift包含括号本身：
+let g:yankring_zap_keys = 'f'
+map <F4>  T(dt)
+map <F5>  T(yt)
+map <S-F4>  T(hvt)ld
+map <S-F5>  T(hvt)ly
+
+"打开和关闭搜索高亮:
+map <a-m> :set nohlsearch<CR>
+map <a-n> :set hlsearch<CR>
+
+"为自动完成习惯：
+imap <c-j> <c-x><c-o>
+inoremap <expr> <c-k> pumvisible()?"\<Down>":"\<c-k>"  
+let g:acp_completeOption ='.,t,i'	"让AutoComplPop插件在弹出时，在更多的地方查找。
+
+"Voom 设定:
+map <F12> :Voom<CR>
+:set fmr=<<<,>>>
+
+"TagHighlight设置：
+if ! exists('g:TagHighlightSettings')
+	let g:TagHighlightSettings = {}
+endif
+let g:TagHighlightSettings['IncludeLocals'] =1 		
+
+
+
+"TagList 设置:
+let Tlist_Show_One_File=1		" 不同时显示多个文件的 tag ，只显示当前文件的
+""let Tlist_File_Fold_Auto_Close=1	"让当前不被编辑的文件的方法列表自动折叠起来 
+let Tlist_Use_Right_Window=1 		"把taglist窗口放在屏幕的右侧，缺省在左侧 
+let Tlist_Show_Menu=1			"显示taglist菜单
+nmap <silent> <F11> :Tlist<cr>		
+
+
+"winmanager 设置：
+let g:winManagerWindowLayout='NERDTree|TagList'		"设置界面分割
+""let g:winManagerWindowLayout = "TagList|FileExplorer"
+let g:winManagerWidth = 30 				"设置winmanager的宽度，默认为25
+
+"定义打开关闭winmanager按键
+nmap <silent> <C-F11> :WMToggle<cr>		
+
+
+"NERDTree 设置：
+let g:NERDTree_title='NERD Tree'
+function! NERDTree_Start()
+    exec 'NERDTree'
+endfunction
+
+function! NERDTree_IsValid()
+    return 1
+endfunction
+
+"NERDTree中不显示的文件后缀名或目录名称：
+let NERDTreeIgnore=['\.uvopt$', '\~$','\.uvproj','\.dll','\makefile','\.svn','\.bak','\.dep']
+
+"窗口全屏:
+map <a-F12> <Esc>:call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
+
+"Cscope
+"查找声明
+nmap <C-Space>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+"查找定义
+nmap <C-Space>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+"查找调用
+nmap <C-Space>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+"查找指定的字符串
+nmap <C-Space>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+"查找egrep模式，相当于egrep功能，但查找速度快多了
+nmap <C-Space>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+"查找文件
+nmap <C-Space>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+"查找包含本文件的文件
+nmap <C-Space>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
+"查找本函数调用的函数
+nmap <C-Space>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+

@@ -1,0 +1,123 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AllOptions	.\cmd.py	/^from .options import AllOptions$/;"	i
+AllOptions	.\utilities.py	/^            from .options import AllOptions$/;"	i
+AllOptions	.\options.py	/^AllOptions = {}$/;"	v
+CreateTypesFile	.\generation.py	/^def CreateTypesFile(options, language, tags):$/;"	f
+CreateTypesFile	.\worker.py	/^    from .generation import CreateTypesFile$/;"	i
+Debug	.\debug.py	/^def Debug(msg, level):$/;"	f
+Debug	.\config.py	/^from .debug import SetDebugLogFile, SetDebugLogLevel, Debug$/;"	i
+Debug	.\ctags_interface.py	/^from .debug import Debug$/;"	i
+Debug	.\generation.py	/^from .debug import Debug$/;"	i
+Debug	.\languages.py	/^from .debug import Debug$/;"	i
+Debug	.\worker.py	/^    from .debug import Debug$/;"	i
+DictDict	.\utilities.py	/^class DictDict(dict):$/;"	c
+DictDict	.\ctags_interface.py	/^from .utilities import DictDict$/;"	i
+FindLocalVariableKinds	.\ctags_interface.py	/^        def FindLocalVariableKinds(language_kinds):$/;"	f	function:GetCommandArgs
+GenerateExtensionTable	.\languages.py	/^    def GenerateExtensionTable(self):$/;"	m	class:Languages
+GenerateFullKindList	.\languages.py	/^    def GenerateFullKindList(self):$/;"	m	class:Languages
+GenerateTags	.\ctags_interface.py	/^def GenerateTags(options):$/;"	f
+GenerateTags	.\worker.py	/^    from .ctags_interface import GenerateTags, ParseTags$/;"	i
+GenerateValidKeywordRange	.\utilities.py	/^def GenerateValidKeywordRange(iskeyword):$/;"	f
+GenerateValidKeywordRange	.\generation.py	/^from .utilities import GenerateValidKeywordRange, IsValidKeyword$/;"	i
+GetAllLanguageHandlers	.\languages.py	/^    def GetAllLanguageHandlers(self):$/;"	m	class:Languages
+GetAllLanguages	.\languages.py	/^    def GetAllLanguages(self):$/;"	m	class:Languages
+GetCommandArgs	.\ctags_interface.py	/^def GetCommandArgs(options):$/;"	f
+GetKindList	.\languages.py	/^    def GetKindList(self, language=None):$/;"	m	class:Languages
+GetLanguageHandler	.\languages.py	/^    def GetLanguageHandler(self, name):$/;"	m	class:Languages
+GlobData	.\loaddata.py	/^def GlobData(matcher):$/;"	f
+GlobData	.\languages.py	/^from .loaddata import LoadDataFile, LoadFile, GlobData$/;"	i
+IsValidKeyword	.\utilities.py	/^def IsValidKeyword(keyword, iskeyword):$/;"	f
+IsValidKeyword	.\generation.py	/^from .utilities import GenerateValidKeywordRange, IsValidKeyword$/;"	i
+Languages	.\languages.py	/^class Languages():$/;"	c
+Languages	.\config.py	/^    from .languages import Languages$/;"	i
+Languages	.\ctags_interface.py	/^from .languages import Languages$/;"	i
+LoadDataFile	.\loaddata.py	/^def LoadDataFile(relative, list_entries=[]):$/;"	f
+LoadDataFile	.\config.py	/^from .loaddata import LoadFile, LoadDataFile, SetLoadDataDirectory$/;"	i
+LoadDataFile	.\languages.py	/^from .loaddata import LoadDataFile, LoadFile, GlobData$/;"	i
+LoadDataFile	.\options.py	/^from .loaddata import LoadDataFile$/;"	i
+LoadFile	.\loaddata.py	/^def LoadFile(filename, list_entries=[]):$/;"	f
+LoadFile	.\config.py	/^from .loaddata import LoadFile, LoadDataFile, SetLoadDataDirectory$/;"	i
+LoadFile	.\languages.py	/^from .loaddata import LoadDataFile, LoadFile, GlobData$/;"	i
+LoadLanguages	.\config.py	/^def LoadLanguages():$/;"	f
+LoadLanguages	.\cmd.py	/^from .config import SetInitialOptions, LoadLanguages$/;"	i
+LoadLanguages	.\worker.py	/^    from .config import config, SetInitialOptions, LoadLanguages$/;"	i
+LoadOptionSpecification	.\options.py	/^def LoadOptionSpecification():$/;"	f
+LoadVersionInfo	.\config.py	/^def LoadVersionInfo():$/;"	f
+ParseTags	.\ctags_interface.py	/^def ParseTags(options):$/;"	f
+ParseTags	.\worker.py	/^    from .ctags_interface import GenerateTags, ParseTags$/;"	i
+ProcessCommandLine	.\cmd.py	/^def ProcessCommandLine():$/;"	f
+ReadConfigFile	.\languages.py	/^    def ReadConfigFile(self, filename):$/;"	m	class:Languages
+RunWithOptions	.\worker.py	/^def RunWithOptions(options):$/;"	f
+SetDataDirectories	.\config.py	/^def SetDataDirectories():$/;"	f
+SetDebugLogFile	.\debug.py	/^def SetDebugLogFile(filename):$/;"	f
+SetDebugLogFile	.\config.py	/^from .debug import SetDebugLogFile, SetDebugLogLevel, Debug$/;"	i
+SetDebugLogLevel	.\debug.py	/^def SetDebugLogLevel(level):$/;"	f
+SetDebugLogLevel	.\config.py	/^from .debug import SetDebugLogFile, SetDebugLogLevel, Debug$/;"	i
+SetDict	.\utilities.py	/^class SetDict(dict):$/;"	c
+SetInitialOptions	.\config.py	/^def SetInitialOptions(new_options):$/;"	f
+SetInitialOptions	.\cmd.py	/^from .config import SetInitialOptions, LoadLanguages$/;"	i
+SetInitialOptions	.\worker.py	/^    from .config import config, SetInitialOptions, LoadLanguages$/;"	i
+SetLoadDataDirectory	.\loaddata.py	/^def SetLoadDataDirectory(directory):$/;"	f
+SetLoadDataDirectory	.\config.py	/^from .loaddata import LoadFile, LoadDataFile, SetLoadDataDirectory$/;"	i
+TagHighlightOptionDict	.\utilities.py	/^class TagHighlightOptionDict(dict):$/;"	c
+TagHighlightOptionDict	.\config.py	/^from .utilities import TagHighlightOptionDict$/;"	i
+Values	.\config.py	/^from optparse import Values$/;"	i
+VerifyLanguage	.\languages.py	/^    def VerifyLanguage(self, language_dict):$/;"	m	class:Languages
+__getattr__	.\utilities.py	/^    def __getattr__(self, name):$/;"	m	class:TagHighlightOptionDict	file:
+__getitem__	.\utilities.py	/^    def __getitem__(self, key):$/;"	m	class:DictDict	file:
+__getitem__	.\utilities.py	/^    def __getitem__(self, key):$/;"	m	class:SetDict	file:
+__getitem__	.\utilities.py	/^    def __getitem__(self, name):$/;"	m	class:TagHighlightOptionDict	file:
+__init__	.\languages.py	/^    def __init__(self, options):$/;"	m	class:Languages
+__setattr__	.\utilities.py	/^    def __setattr__(self, name, value):$/;"	m	class:TagHighlightOptionDict	file:
+__setitem__	.\utilities.py	/^    def __setitem__(self, key, value):$/;"	m	class:DictDict	file:
+__setitem__	.\utilities.py	/^    def __setitem__(self, key, value):$/;"	m	class:SetDict	file:
+config	.\languages.py	/^from .config import config$/;"	i
+config	.\options.py	/^from .config import config$/;"	i
+config	.\worker.py	/^    from .config import config, SetInitialOptions, LoadLanguages$/;"	i
+config	.\config.py	/^config = TagHighlightOptionDict()$/;"	v
+ctags_key	.\ctags_interface.py	/^def ctags_key(ctags_line):$/;"	f
+data_directory	.\loaddata.py	/^data_directory = None$/;"	v
+debug_log_file	.\debug.py	/^debug_log_file = None$/;"	v
+debug_log_levels	.\debug.py	/^debug_log_levels = ('Critical', 'Error', 'Warning', 'Status', 'Information', 'None')$/;"	v
+debug_log_level	.\debug.py	/^debug_log_level = 'None'$/;"	v
+field_const	.\ctags_interface.py	/^field_const = re.compile(r'\\bconst\\b')$/;"	v
+field_processor	.\ctags_interface.py	/^field_processor = re.compile($/;"	v
+glob	.\ctags_interface.py	/^import glob$/;"	i
+glob	.\languages.py	/^import glob$/;"	i
+glob	.\loaddata.py	/^import glob$/;"	i
+key_regexp	.\ctags_interface.py	/^key_regexp = re.compile('^(?P<keyword>.*?)\\t(?P<remainder>.*\\t(?P<kind>[a-zA-Z])(?:\\t|$).*)')$/;"	v
+optparse	.\cmd.py	/^import optparse$/;"	i
+os	.\cmd.py	/^import os$/;"	i
+os	.\config.py	/^import os$/;"	i
+os	.\ctags_interface.py	/^import os$/;"	i
+os	.\debug.py	/^import os$/;"	i
+os	.\generation.py	/^import os$/;"	i
+os	.\languages.py	/^import os$/;"	i
+os	.\loaddata.py	/^import os$/;"	i
+os	.\options.py	/^import os$/;"	i
+os	.\worker.py	/^import os$/;"	i
+pprint	.\utilities.py	/^    import pprint$/;"	i
+pprint	.\worker.py	/^        import pprint$/;"	i
+print_function	.\cmd.py	/^from __future__ import print_function$/;"	i
+print_function	.\ctags_interface.py	/^from __future__ import print_function$/;"	i
+print_function	.\debug.py	/^from __future__ import print_function$/;"	i
+print_function	.\generation.py	/^from __future__ import print_function$/;"	i
+print_function	.\loaddata.py	/^from __future__ import print_function$/;"	i
+print_function	.\utilities.py	/^from __future__ import print_function$/;"	i
+print_function	.\worker.py	/^from __future__ import print_function$/;"	i
+print_timing	.\utilities.py	/^def print_timing(func):$/;"	f
+registry	.\languages.py	/^    registry = {}$/;"	v	class:Languages
+re	.\ctags_interface.py	/^import re$/;"	i
+re	.\generation.py	/^import re$/;"	i
+re	.\utilities.py	/^import re$/;"	i
+subprocess	.\ctags_interface.py	/^import subprocess$/;"	i
+sys	.\config.py	/^import sys$/;"	i
+sys	.\worker.py	/^import sys$/;"	i
+time	.\utilities.py	/^import time$/;"	i
+vim_synkeyword_arguments	.\generation.py	/^vim_synkeyword_arguments = [$/;"	v
+wrapper	.\utilities.py	/^    def wrapper(*arg):$/;"	f	function:print_timing
