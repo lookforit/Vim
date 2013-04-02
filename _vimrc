@@ -98,6 +98,9 @@ map <m-q>   :q<CR>
 "设置当前编辑文件的路径为当前路径:
 map <F2> :lcd %:h<CR>
 
+"退格键设定上一层目录为当前路径：
+noremap <BS> :cd..<CR>:cd<CR>
+
 "复制到剪贴板:
 vmap <F3> "+y
 
