@@ -243,6 +243,7 @@ let g:neocomplcache_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 " For rank priority setting in the popup list
 let g:neocomplcache_source_rank = {
 			\'snippets_complete' : 4,
+			\ 'buffer_complete' : 8
 			\ }
 
 
