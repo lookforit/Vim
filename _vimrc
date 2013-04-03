@@ -60,6 +60,7 @@ set nobackup
 set ignorecase smartcase
 set report=0
 set noswapfile
+set shiftwidth=4
 
 if has("gui_running")
 	set guioptions-=m " Òþ²Ø²Ëµ¥À¸
