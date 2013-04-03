@@ -125,10 +125,6 @@ imap <c-j> <c-x><c-o>
 inoremap <expr> <c-k> pumvisible()?"\<Up>":"\<c-k>"  
 inoremap <expr> <c-j> pumvisible()?"\<Down>":"\<c-j>"  
 
-"acp 习惯:
-"let g:acp_completeOption ='.,t,i'	"让AutoComplPop插件在弹出时，在更多的地方查找。
-"let g:acp_enableAtStartup = 0
-
 "Voom 设定:
 map <F12> :Voom<CR>
 :set fmr=<<<,>>>
