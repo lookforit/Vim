@@ -131,7 +131,10 @@ map <F12> :Voom<CR>
 :set fmr=<<<,>>>
 
 "打开括号匹配彩色显示(rainbow 插件)
-au syntax * cal rainbow#activate()
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
 
 "TagHighlight设置：
 if ! exists('g:TagHighlightSettings')
