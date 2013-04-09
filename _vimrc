@@ -251,15 +251,6 @@ let g:neocomplcache_source_rank = {
 
 
 
-"winmanager 设置：
-let g:winManagerWindowLayout='NERDTree|TagList'		"设置界面分割
-""let g:winManagerWindowLayout = "TagList|FileExplorer"
-let g:winManagerWidth = 30 				"设置winmanager的宽度，默认为25
-
-"定义打开关闭winmanager按键
-nmap <silent> <C-F11> :WMToggle<cr>		
-
-
 "NERDTree 设置：
 let g:NERDTree_title='NERD Tree'
 function! NERDTree_Start()
