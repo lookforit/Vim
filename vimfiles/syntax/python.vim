@@ -251,7 +251,7 @@ endif
 
 if exists("python_highlight_builtin_funcs") && python_highlight_builtin_funcs != 0
   " Builtin functions
-  syn keyword pythonBuiltinFunc	__import__ abs all any apply
+  syn keyword pythonBuiltinFunc	__import__ __init__ abs all any apply
   syn keyword pythonBuiltinFunc	basestring bin bool buffer bytearray bytes callable
   syn keyword pythonBuiltinFunc	chr classmethod cmp coerce compile complex
   syn keyword pythonBuiltinFunc	delattr dict dir divmod enumerate eval
