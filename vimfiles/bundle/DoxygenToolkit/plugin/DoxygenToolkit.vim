@@ -1097,7 +1097,7 @@ function! s:InitializeParameters()
     let s:interCommentBlock = g:DoxygenToolkit_interCommentBlock
     let s:endCommentBlock   = g:DoxygenToolkit_endCommentBlock
   else
-    let s:startCommentTag   = "## "
+    let s:startCommentTag   = "# "
     let s:interCommentTag   = "# "
     let s:endCommentTag     = ""
     let s:startCommentBlock = "# "
