@@ -115,6 +115,16 @@ options     head
 	finally:
 		${2}
 
+snippet     tryexceptfinally
+abbr        try: ...except... finally: ...
+options     head
+	try:
+		${1:TARGET}
+	except ${2:#:ExceptionClass}:
+		${3}
+	finally:
+		${4}
+
 snippet     while
 abbr        while ...: ...
 options     head
