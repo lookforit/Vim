@@ -26,10 +26,15 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include <io.h>
 
 /* For GetConsoleWindow() for Windows 2000 or later. */
+#ifndef WINVER
 #define WINVER        0x0500
+#endif
+#ifndef _WIN32_WINNT
 #define _WIN32_WINNT  0x0500
+#endif
 
 #include <windows.h>
 #include <winbase.h>
@@ -88,14 +93,17 @@ EXPORT const char *vp_socket_close(char *args);/* [] (socket) */
 EXPORT const char *vp_socket_read(char *args); /* [hd, eof] (socket, nr, timeout) */
 EXPORT const char *vp_socket_write(char *args);/* [nleft] (socket, hd, timeout) */
 
+EXPORT const char *vp_host_exists(char *args); /* [int] (host) */
+
 EXPORT const char *vp_decode(char *args);      /* [decoded_str] (encode_str) */
 
 EXPORT const char *vp_open(char *args);      /* [] (path) */
 EXPORT const char *vp_readdir(char *args);  /* [files] (dirname) */
 
+
 EXPORT const char * vp_delete_trash(char *args);  /* [filename] */
 
-static BOOL ExitRemoteProcess(HANDLE hProcess, UINT uExitCode);
+static BOOL ExitRemoteProcess(HANDLE hProcess, UINT_PTR uExitCode);
 
 /* --- */
 
@@ -115,6 +123,7 @@ lasterror()
 #define close _close
 #define read _read
 #define write _write
+#define lseek _lseek
 
 #define CSI_WndCols(csi) ((csi)->srWindow.Right - (csi)->srWindow.Left +1)
 #define CSI_WndRows(csi) ((csi)->srWindow.Bottom - (csi)->srWindow.Top +1)
@@ -156,7 +165,7 @@ vp_dlclose(char *args)
 const char *
 vp_dlversion(char *args)
 {
-    vp_stack_push_num(&_result, "%2d%02d", 7, 0);
+    vp_stack_push_num(&_result, "%2d%02d", 7, 1);
     return vp_stack_return(&_result);
 }
 
@@ -341,7 +350,7 @@ vp_file_write(char *args)
             /* timeout */
             break;
         }
-        n = write(fd, buf + nleft, size - nleft);
+        n = write(fd, buf + nleft, (unsigned int)(size - nleft));
         if (n == -1) {
             return vp_stack_return_error(&_result, "write() error: %s",
                     strerror(errno));
@@ -363,9 +372,9 @@ vp_pipe_open(char *args)
     vp_stack_t stack;
     int npipe, hstdin, hstderr, hstdout;
     char *cmdline;
-    HANDLE hInputWrite, hInputRead;
-    HANDLE hOutputWrite, hOutputRead;
-    HANDLE hErrorWrite, hErrorRead;
+    HANDLE hInputWrite = INVALID_HANDLE_VALUE, hInputRead;
+    HANDLE hOutputWrite, hOutputRead = INVALID_HANDLE_VALUE;
+    HANDLE hErrorWrite, hErrorRead = INVALID_HANDLE_VALUE;
     SECURITY_ATTRIBUTES sa;
     PROCESS_INFORMATION pi;
     STARTUPINFO si;
@@ -503,12 +512,12 @@ vp_pipe_open(char *args)
 
     vp_stack_push_num(&_result, "%p", pi.hProcess);
     vp_stack_push_num(&_result, "%d", hstdin ?
-            0 : _open_osfhandle((long)hInputWrite, 0));
+            0 : _open_osfhandle((size_t)hInputWrite, 0));
     vp_stack_push_num(&_result, "%d", hstdout ?
-            0 : _open_osfhandle((long)hOutputRead, _O_RDONLY));
+            0 : _open_osfhandle((size_t)hOutputRead, _O_RDONLY));
     if (npipe == 3)
         vp_stack_push_num(&_result, "%d", hstderr ?
-                0 : _open_osfhandle((long)hErrorRead, _O_RDONLY));
+                0 : _open_osfhandle((size_t)hErrorRead, _O_RDONLY));
     return vp_stack_return(&_result);
 }
 
@@ -645,7 +654,7 @@ vp_kill(char *args)
 
 /* Improved kill function. */
 /* http://homepage3.nifty.com/k-takata/diary/2009-05.html */
-static BOOL ExitRemoteProcess(HANDLE hProcess, UINT uExitCode)
+static BOOL ExitRemoteProcess(HANDLE hProcess, UINT_PTR uExitCode)
 {
     LPTHREAD_START_ROUTINE pfnExitProcess =
         (LPTHREAD_START_ROUTINE) GetProcAddress(
@@ -701,6 +710,37 @@ vp_close_handle(char *args)
  */
 static int sockets_number = 0;
 
+static int
+detain_winsock()
+{
+    WSADATA wsadata;
+    int res = 0;
+
+    if (sockets_number == 0)    /* Need startup process. */
+    {
+        res = WSAStartup(MAKEWORD(2, 0), &wsadata);
+        if(res) return res;   /* Fail */
+    }
+    ++sockets_number;
+    return res;
+}
+
+static int
+release_winsock()
+{
+    int res = 0;
+
+    if (sockets_number != 0)
+    {
+        res = WSACleanup();
+        if(res) return res;   /* Fail */
+
+        --sockets_number;
+    }
+    return res;
+}
+
+
 const char *
 vp_socket_open(char *args)
 {
@@ -719,14 +759,14 @@ vp_socket_open(char *args)
     VP_RETURN_IF_FAIL(vp_stack_pop_str(&stack, &host));
     VP_RETURN_IF_FAIL(vp_stack_pop_str(&stack, &port));
 
-    if (sockets_number++ == 0)
+    if(detain_winsock())
     {
-        WSADATA wsadata;
-        WSAStartup(2, &wsadata);
+        return vp_stack_return_error(&_result, "WSAStartup() error: %s",
+            lasterror());
     }
 
     if (sscanf(port, "%d%n", &port_nr, &n) == 1 && port[n] == '\0') {
-        nport = htons(port_nr);
+        nport = htons((u_short)port_nr);
     } else {
         servent = getservbyname(port, NULL);
         if (servent == NULL)
@@ -735,7 +775,7 @@ vp_socket_open(char *args)
         nport = servent->s_port;
     }
 
-    sock = socket(PF_INET, SOCK_STREAM, 0);
+    sock = (int)socket(PF_INET, SOCK_STREAM, 0);
     hostent = gethostbyname(host);
     sockaddr.sin_family = AF_INET;
     sockaddr.sin_port = nport;
@@ -763,10 +803,7 @@ vp_socket_close(char *args)
         return vp_stack_return_error(&_result, "closesocket() error: %d",
                 WSAGetLastError());
     }
-    if (--sockets_number == 0)
-    {
-        WSACleanup();
-    }
+    release_winsock();
     return NULL;
 }
 
@@ -858,7 +895,7 @@ vp_socket_write(char *args)
             /* timeout */
             break;
         }
-        n = send(sock, buf + nleft, size - nleft, 0);
+        n = send(sock, buf + nleft, (int)(size - nleft), 0);
         if (n == -1)
             return vp_stack_return_error(&_result, "send() error: %s",
                     strerror(errno));
@@ -869,6 +906,39 @@ vp_socket_write(char *args)
     vp_stack_push_num(&_result, "%u", nleft);
     return vp_stack_return(&_result);
 }
+
+
+/*
+ * Added by Richard Emberson
+ * Check to see if a host exists.
+ */
+const char *
+vp_host_exists(char *args)
+{
+    vp_stack_t stack;
+    char *host;
+    struct hostent *hostent;
+
+    VP_RETURN_IF_FAIL(vp_stack_from_args(&stack, args));
+    VP_RETURN_IF_FAIL(vp_stack_pop_str(&stack, &host));
+
+    if(detain_winsock())
+    {
+        return vp_stack_return_error(&_result, "WSAStartup() error: %s",
+            lasterror());
+    }
+    hostent = gethostbyname(host);
+    release_winsock();
+
+    if (hostent) {
+        vp_stack_push_num(&_result, "%d", 1);
+    } else {
+        vp_stack_push_num(&_result, "%d", 0);
+    }
+
+    return vp_stack_return(&_result);
+}
+
 
 /* Referenced from */
 /* http://www.syuhitu.org/other/dir.html */
@@ -953,7 +1023,7 @@ vp_open(char *args)
     VP_RETURN_IF_FAIL(vp_stack_from_args(&stack, args));
     VP_RETURN_IF_FAIL(vp_stack_pop_str(&stack, &path));
 
-    if ((int)ShellExecute(NULL, "open", path, NULL, NULL, SW_SHOWNORMAL) < 32) {
+    if ((size_t)ShellExecute(NULL, "open", path, NULL, NULL, SW_SHOWNORMAL) < 32) {
         return vp_stack_return_error(&_result, "ShellExecute() error: %s",
                 lasterror());
     }
@@ -965,40 +1035,60 @@ const char *
 vp_decode(char *args)
 {
     vp_stack_t stack;
-    unsigned num = 0;
-    unsigned i = 0;
-    size_t length;
+    unsigned num;
+    unsigned i, bi;
+    size_t length, max_buf;
     char *str;
     char *buf;
     char *p;
-    char *bp;
 
     VP_RETURN_IF_FAIL(vp_stack_from_args(&stack, args));
     VP_RETURN_IF_FAIL(vp_stack_pop_str(&stack, &str));
 
     length = strlen(str);
-    buf = (char *)malloc(length/2 + 2);
+    max_buf = length/2 + 2;
+    buf = (char *)malloc(max_buf);
     if (buf == NULL) {
         return vp_stack_return_error(&_result, "malloc() error: %s",
                 "Memory cannot allocate");
     }
 
     p = str;
-    bp = buf;
+    bi = 0;
+    num = 0;
     for (i = 0; i < length; i++, p++) {
-        if (isdigit(*p))
+        if (isdigit((int)*p))
             num |= (*p & 15);
         else
             num |= (*p & 15) + 9;
 
-        if (i % 2) {
-            *bp++ = num;
-            num = 0;
-        } else {
+        if (i % 2 == 0) {
             num <<= 4;
+            continue;
         }
+
+        /* Write character. */
+        if (num == 0) {
+            /* Convert NULL character. */
+            max_buf += 1;
+            buf = (char *)realloc(buf, max_buf);
+            if (buf == NULL) {
+                return vp_stack_return_error(
+                        &_result, "realloc() error: %s",
+                        "Memory cannot allocate");
+            }
+
+            buf[bi] = '^';
+            bi++;
+            buf[bi] = '@';
+            bi++;
+        } else {
+            buf[bi] = (char)num;
+            bi++;
+        }
+        num = 0;
     }
-    *bp = '\0';
+    buf[bi] = '\0';
     vp_stack_push_str(&_result, buf);
     free(buf);
     return vp_stack_return(&_result);

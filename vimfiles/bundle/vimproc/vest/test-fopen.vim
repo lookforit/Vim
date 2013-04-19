@@ -1,3 +1,5 @@
+" Tests for vesting.
+
 scriptencoding utf-8
 
 " Saving 'cpoptions' {{{
@@ -5,10 +7,8 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}
 
-source spec/base.vim
-
 Context Fopen.run()
-  let filename = 'spec/test-fopen.vim'
+  let filename = expand('<sfile>')
   let file = vimproc#fopen(filename, 'O_RDONLY', 0)
   let res = file.read()
 
@@ -27,10 +27,7 @@ Context Fopen.run()
   End
 
   let file = vimproc#fopen(filename, 'O_RDONLY', 0)
-  let res2 = []
-  while !file.eof
-    call add(res2, file.read_line())
-  endwhile
+  let res2 = file.read_lines()
 
   It yet not closed
     Should file.is_valid
@@ -43,7 +40,7 @@ Context Fopen.run()
   End
 
   It is same to readfile()
-    Should readfile(filename) == res2
+    Should readfile(filename, 'b') == res2
   End
 End
 

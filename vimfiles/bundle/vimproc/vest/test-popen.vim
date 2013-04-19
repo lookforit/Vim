@@ -1,3 +1,5 @@
+" Tests for vesting.
+
 scriptencoding utf-8
 
 " Saving 'cpoptions' {{{
@@ -5,9 +7,12 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}
 
-source spec/base.vim
-
 Context Popen.popen2()
+  if !executable('ls')
+    echo 'ls command is not installed.'
+    finish
+  endif
+
   let cmd = 'ls'
   let sub = vimproc#popen2([cmd])
   let res = ''
@@ -107,10 +112,6 @@ Context Popen.popen3()
 
   It is same to system()
     Should res == system(cmd)
-  End
-
-  It returns empty string
-    Should sub.stderr.read() == ""
   End
 
   unlet cmd
