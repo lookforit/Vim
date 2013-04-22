@@ -1,0 +1,10 @@
+'smartclose_default_mapping_key'	smartclose.txt	/*'smartclose_default_mapping_key'*
+'smartclose_delay'	smartclose.txt	/*'smartclose_delay'*
+'smartclose_set_default_mapping'	smartclose.txt	/*'smartclose_set_default_mapping'*
+'smartclose_set_mapping_with_bang'	smartclose.txt	/*'smartclose_set_mapping_with_bang'*
+SmartClose	smartclose.txt	/*SmartClose*
+smartclose-about	smartclose.txt	/*smartclose-about*
+smartclose-author-license	smartclose.txt	/*smartclose-author-license*
+smartclose-configuration	smartclose.txt	/*smartclose-configuration*
+smartclose-usage	smartclose.txt	/*smartclose-usage*
+smartclose.txt	smartclose.txt	/*smartclose.txt*

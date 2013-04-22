@@ -93,8 +93,9 @@ imap <M-Down> <ESC><c-w>j
 "normal模式下换行：
 map <c-CR>  :put=''<CR>
 
-"关闭一个buffer：
-map <m-q>   :q<CR>
+"引入SmartClose插件，快捷关闭buffer：
+let g:smartclose_set_default_mapping = 0
+nnoremap <silent><m-q> :SmartClose<CR>
 
 "设置当前编辑文件的路径为当前路径:
 map <F2> :lcd %:h<CR>
@@ -107,9 +108,6 @@ vmap <F3> "+y
 
 "删除或复制到括号中的内容，Shift包含括号本身：
 let g:yankring_zap_keys = 'f'
-
-"快捷关掉其它窗口
-noremap <Leader>q :only<CR>
 
 "通过"%%" 快捷输入当前buffer目录(windows版本，linux下需将"\"替换为"/")
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'\' : '%%'
