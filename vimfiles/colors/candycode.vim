@@ -170,7 +170,7 @@ hi Todo         guifg=#ffffff       guibg=#ee7700       gui=bold
 
 highlight Cursor guifg=black guibg=yellow gui=NONE ctermfg=16 ctermbg=226 cterm=NONE
 highlight Visual guifg=gray17 guibg=tan1 gui=NONE ctermfg=235 ctermbg=215 cterm=NONE
-highlight Search guifg=gray80 guibg=#445599 gui=NONE ctermfg=252 ctermbg=61 cterm=NONE
+highlight Search guifg=black guibg=green gui=NONE ctermfg=252 ctermbg=61 cterm=NONE
 
 hi Class  guifg=#0099CC	   gui=bold
 hi Structure guifg=#0099CC gui=bold
