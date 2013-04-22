@@ -149,6 +149,9 @@ let g:tagbar_width = 30
 
 
 "NeoCompleteCache :
+
+" Don't popup when cursor moving in insert mode
+let g:neocomplcache_enable_insert_char_pre = 1
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
 " Use neocomplcache.
