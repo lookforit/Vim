@@ -244,8 +244,6 @@ command-t-usage	command-t.txt	/*command-t-usage*
 command-t-website	command-t.txt	/*command-t-website*
 command-t-wildignore	command-t.txt	/*command-t-wildignore*
 command-t.txt	command-t.txt	/*command-t.txt*
-cs	surround.txt	/*cs*
-ds	surround.txt	/*ds*
 g%	matchit.txt	/*g%*
 g:CommandTAcceptSelectionMap	command-t.txt	/*g:CommandTAcceptSelectionMap*
 g:CommandTAcceptSelectionSplitMap	command-t.txt	/*g:CommandTAcceptSelectionSplitMap*
@@ -273,8 +271,6 @@ g:CommandTSelectPrevMap	command-t.txt	/*g:CommandTSelectPrevMap*
 g:CommandTToggleFocusMap	command-t.txt	/*g:CommandTToggleFocusMap*
 g:TagHighlightSettings	TagHighlight.txt	/*g:TagHighlightSettings*
 global-example	yankring.txt	/*global-example*
-i_CTRL-G_S	surround.txt	/*i_CTRL-G_S*
-i_CTRL-G_s	surround.txt	/*i_CTRL-G_s*
 matchit	matchit.txt	/*matchit*
 matchit-%	matchit.txt	/*matchit-%*
 matchit-\1	matchit.txt	/*matchit-\\1*
@@ -319,14 +315,6 @@ showmarks-contents	showmarks.txt	/*showmarks-contents*
 showmarks-highlighting	showmarks.txt	/*showmarks-highlighting*
 showmarks-mappings	showmarks.txt	/*showmarks-mappings*
 showmarks.txt	showmarks.txt	/*showmarks.txt*
-surround	surround.txt	/*surround*
-surround-author	surround.txt	/*surround-author*
-surround-customizing	surround.txt	/*surround-customizing*
-surround-issues	surround.txt	/*surround-issues*
-surround-mappings	surround.txt	/*surround-mappings*
-surround-replacements	surround.txt	/*surround-replacements*
-surround-targets	surround.txt	/*surround-targets*
-surround.txt	surround.txt	/*surround.txt*
 taghl_config.txt	TagHighlight.txt	/*taghl_config.txt*
 v_[%	matchit.txt	/*v_[%*
 v_]%	matchit.txt	/*v_]%*
@@ -364,9 +352,6 @@ voom_shuttle_keys	voom.txt	/*voom_shuttle_keys*
 voom_sort	voom.txt	/*voom_sort*
 voom_special_marks	voom.txt	/*voom_special_marks*
 voom_tree_folding	voom.txt	/*voom_tree_folding*
-vs	surround.txt	/*vs*
-yS	surround.txt	/*yS*
-ySS	surround.txt	/*ySS*
 yankring	yankring.txt	/*yankring*
 yankring-commands	yankring.txt	/*yankring-commands*
 yankring-configure	yankring.txt	/*yankring-configure*
@@ -381,5 +366,3 @@ yankring-visual-example	yankring.txt	/*yankring-visual-example*
 yankring-window	yankring.txt	/*yankring-window*
 yankring-window-example	yankring.txt	/*yankring-window-example*
 yankring.txt	yankring.txt	/*yankring.txt*
-ys	surround.txt	/*ys*
-yss	surround.txt	/*yss*

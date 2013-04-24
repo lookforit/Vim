@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: neocomplcache.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 16 Apr 2013.
+" Last Modified: 24 Apr 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -57,7 +57,7 @@ command! -nargs=0 -bar NeoComplCacheDisable
 command! -nargs=0 -bar NeoComplCacheLock
       \ call neocomplcache#commands#_lock()
 command! -nargs=0 -bar NeoComplCacheUnlock
-      \ call neocomplcache#unlock()
+      \ call neocomplcache#commands#_unlock()
 command! -nargs=0 -bar NeoComplCacheToggle
       \ call neocomplcache#commands#_toggle_lock()
 command! -nargs=1 -bar NeoComplCacheLockSource
@@ -101,7 +101,7 @@ endfunction"}}}
 let g:neocomplcache_max_list =
       \ get(g:, 'neocomplcache_max_list', 100)
 let g:neocomplcache_max_keyword_width =
-      \ get(g:, 'neocomplcache_max_keyword_width', 50)
+      \ get(g:, 'neocomplcache_max_keyword_width', 80)
 let g:neocomplcache_max_menu_width =
       \ get(g:, 'neocomplcache_max_menu_width', 15)
 let g:neocomplcache_auto_completion_start_length =
@@ -165,7 +165,7 @@ let g:neocomplcache_wildcard_characters =
 let g:neocomplcache_skip_auto_completion_time =
       \ get(g:, 'neocomplcache_skip_auto_completion_time', '0.3')
 let g:neocomplcache_enable_auto_close_preview =
-      \ get(g:, 'neocomplcache_enable_auto_close_preview', 0)
+      \ get(g:, 'neocomplcache_enable_auto_close_preview', 1)
 
 let g:neocomplcache_sources_list =
       \ get(g:, 'neocomplcache_sources_list', {})

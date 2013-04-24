@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: complete.vim
 " AUTHOR: Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 16 Apr 2013.
+" Last Modified: 21 Apr 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -335,16 +335,15 @@ function! neocomplcache#complete#_get_words(complete_results, cur_keyword_pos, c
 
   if g:neocomplcache_max_keyword_width >= 0 "{{{
     " Abbr check.
-    let abbr_pattern = printf('%%.%ds..%%s',
-          \ g:neocomplcache_max_keyword_width-15)
     for keyword in complete_words
       let abbr = get(keyword, 'abbr', keyword.word)
       if len(abbr) > g:neocomplcache_max_keyword_width
         let len = neocomplcache#util#wcswidth(abbr)
 
         if len > g:neocomplcache_max_keyword_width
-          let keyword.abbr = neocomplcache#util#truncate(
-                \ abbr, g:neocomplcache_max_keyword_width - 2) . '..'
+          let keyword.abbr = neocomplcache#util#truncate_smart(
+                \ abbr, g:neocomplcache_max_keyword_width,
+                \ g:neocomplcache_max_keyword_width/2, '..')
         endif
       endif
     endfor
@@ -356,7 +355,17 @@ function! neocomplcache#complete#_set_results_pos(cur_text, ...) "{{{
   " Set context filetype.
   call neocomplcache#context_filetype#set()
 
-  let sources = copy(get(a:000, 0, neocomplcache#helper#get_sources_list()))
+  " Initialize sources.
+  let neocomplcache = neocomplcache#get_current_neocomplcache()
+  for source in filter(values(neocomplcache#variables#get_sources()),
+        \ '!v:val.loaded && (get(v:val.filetypes,
+        \             neocomplcache.context_filetype, 0))')
+    call neocomplcache#helper#call_hook(source, 'on_init', {})
+    let source.loaded = 1
+  endfor
+
+  let sources = filter(copy(get(a:000, 0,
+        \ neocomplcache#helper#get_sources_list())), 'v:val.loaded')
   if a:0 < 1
     call filter(sources, '!neocomplcache#is_plugin_locked(v:key)')
   endif
@@ -364,7 +373,7 @@ function! neocomplcache#complete#_set_results_pos(cur_text, ...) "{{{
   " Try source completion. "{{{
   let complete_results = {}
   for [source_name, source] in items(sources)
-    if source.kind ==# 'plugin'
+    if source.kind ==# 'keyword'
       " Plugin default keyword position.
       let [cur_keyword_pos, cur_keyword_str] = neocomplcache#match_word(a:cur_text)
     else
@@ -432,7 +441,7 @@ function! neocomplcache#complete#_set_results_words(complete_results) "{{{
     let pos = winsaveview()
 
     try
-      let words = result.source.kind ==# 'plugin' ?
+      let words = result.source.kind ==# 'keyword' ?
             \ result.source.get_keyword_list(result.cur_keyword_str) :
             \ result.source.get_complete_words(
             \   result.cur_keyword_pos, result.cur_keyword_str)
@@ -441,7 +450,7 @@ function! neocomplcache#complete#_set_results_words(complete_results) "{{{
       call neocomplcache#print_error(v:exception)
       call neocomplcache#print_error(
             \ 'Source name is ' . source_name)
-      if result.source.kind ==# 'plugin'
+      if result.source.kind ==# 'keyword'
         call neocomplcache#print_error(
               \ 'Error occured in source''s get_keyword_list()!')
       else
