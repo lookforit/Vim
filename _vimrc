@@ -71,6 +71,9 @@ if has("gui_running")
 	" set showtabline=0 " Òş²ØTabÀ¸
 endif
 
+" ÏÔÊ¾statusline
+set laststatus=2
+
 "keys map:
 
 
