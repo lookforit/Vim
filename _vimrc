@@ -1,4 +1,10 @@
 set nocompatible
+
+" Disable menu.vim
+if has('gui_running')
+  set guioptions=M
+endif
+
 source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
 behave mswin
@@ -10,8 +16,6 @@ set guifont=consolas:h13
 set encoding=utf-8
 set fileencoding=chinese
 language message zh_CN.utf-8
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
 
 set diffexpr=MyDiff()
 function MyDiff()
@@ -40,6 +44,7 @@ endfunction
 source $VIMRUNTIME/macros/matchit.vim
 autocmd BufEnter *.m    compiler mlint
 :set showmatch
+set matchpairs+=<:>
 
 if has("autocmd") && exists("+omnifunc") 
 	autocmd Filetype * 
@@ -297,7 +302,8 @@ nmap <C-Space>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 
 
 "对 txt 文本文件的特殊处理(让其易用VIMIM输入法):
-autocmd FileType txt :NeoComplCacheDisable	
+" autocmd FileType txt <buffer=abuf> set laststatus=0
+autocmd FileType txt  :NeoComplCacheDisable	
 autocmd FileType txt set completeopt=longest
 let g:vimim_cloud='sogou'
 
