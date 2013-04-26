@@ -11,6 +11,7 @@ behave mswin
 nunmap <c-a>
 colorscheme candycode
 set guifont=consolas:h13
+set shortmess=aTI
 
 "±àÂë·½Ê½ÉèÖÃ£º
 set encoding=utf-8
