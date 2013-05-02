@@ -89,6 +89,10 @@ inoremap <s-l> <right>
 inoremap <s-j> <c-o>gj
 inoremap <s-k> <c-o>gk
 
+" 方便在Wrapped lines 之间移动
+nnoremap j gj
+nnoremap k gk
+
 " 窗口间移动:
 map <M-Right> <c-w>l
 map <M-Left> <c-w>h
@@ -101,6 +105,9 @@ imap <M-Down> <ESC><c-w>j
 
 "normal模式下换行：
 map <c-CR>  :put=''<CR>
+
+" Yank from the cursor to the end of the line, to be consistent with C and D.
+nnoremap Y y$
 
 "引入SmartClose插件，快捷关闭buffer：
 let g:smartclose_set_default_mapping = 0
