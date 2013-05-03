@@ -37,9 +37,6 @@ Sources			|neocomplcache-sources|
 Create source		|neocomplcache-create-source|
   Source attributes       |neocomplcache-source-attributes|
   Candidate attributes   |neocomplcache-candidate-attributes|
-Create filter		|neocomplcache-create-filter|
-  Filter attributes       |neocomplcache-filter-attributes|
-FILTERS			|neocomplcache-filters|
 FAQ			|neocomplcache-faq|
 TODO			|neocomplcache-todo|
 Changelog		|neocomplcache-changelog|
@@ -402,6 +399,14 @@ g:neocomplcache_lock_buffer_name_pattern
 
 		Default value is ''.
 
+g:neocomplcache_compare_function	*g:neocomplcache_compare_function*
+		This variable set compare candidates function.
+		The compare function specification is same to |sort()|
+		compare function.  If you change compare function, you must
+		create compare function.
+
+		Default value is 'neocomplcache#compare_rank'.
+
 g:neocomplcache_enable_prefetch		*g:neocomplcache_enable_prefetch*
 		This variable controls whether neocomplcache prefetches.  If
 		this variable is non-zero, neocomplcache does not flick in auto
@@ -557,7 +562,6 @@ g:neocomplcache_dictionary_filetype_lists
 		variable is empty, neocomplcache uses 'dictionary' option.
 		When you set "text" key, you will appoint dictionary files in
 		text mode.
-		Note: Global 'dictionary' file is not loaded automatically.
 
 		Default value is {}.
 
@@ -850,14 +854,14 @@ g:neocomplcache_source_rank			*g:neocomplcache_source_rank*
 		filename_complete : 3
 		dictionary_complete : 4
 		buffer_complete : 5
-		syntax_complete : 4
+		syntax_complete : 7
 		include_complete : 8
 		snippets_complete : 8
 		vim_complete : 100
 		omni_complete : 50
-		other keyword sources : 5
-		other manual sources : 10
-		other manual sources with filetype : 100
+		other plugin sources : 5
+		other completefunc sources : 10
+		other ftplugin sources : 100
 
 		Default value is set by each sources.
 >
@@ -948,23 +952,7 @@ FUNCTIONS 					*neocomplcache-functions*
 neocomplcache#initialize()			*neocomplcache#initialize()*
 		Initialize neocomplcache and sources.
 		Note: It enables neocomplcache.
-		Note: You should call it in |VimEnter| autocmd.
-		User customization for neocomplcache must be set before
-		initialization of neocomplcache.
 
-neocomplcache#custom_source({source-name}, {option-name}, {value})
-						*neocomplcache#custom_source()*
-		Set {source-name} source specialized {option-name}
-		to {value}. You may specify multiple sources with
-		separating "," in {source-name}.
-		If {source-name} is "_", sources default option will be
-		change.
-		
-		These options below are available:
-		|neocomplcache-source-attributes|
-		Note: User customization for neocomplcache must be set before
-		initialization of neocomplcache.
-		
 					*neocomplcache#get_context_filetype()*
 neocomplcache#get_context_filetype()
 		Get current context filetype of the cursor.  This is smarter
@@ -1249,37 +1237,16 @@ neco-ghc				*neocomplcache-sources-neco-ghc*
 		It requires ghc-mod <http://www.mew.org/~kazu/proj/ghc-mod/>.
 
 ==============================================================================
-FILTERS						*neocomplcache-filters*
+UNITE SOURCES					*neocomplcache-unite-sources*
 
-					*neocomplcache-filter-sorter_rank*
-sorter_rank	Matched rank order sorter.  The higher the matched word is
-		already selected or in current buffer
-
-					*neocomplcache-filter-sorter_nothing*
-sorter_nothing	Nothing sorter.
-
-					*neocomplcach-filter-converter_nothing*
-converter_nothing
-		This converter is dummy.
-
-					*neocomplcache-filter-converter_abbr*
-converter_abbr
-		The converter which abbreviates a candidate's abbr.
-
-					*neocomplcache-filter-converter_case*
-converter_case
-		The converter which converts a candidate's word in text mode.
-		(cf: |g:neocomplcache_text_mode_filetypes|)
-
-				*neocomplcache-filter-converter_delimiter*
-converter_delimiter
-		The converter which abbreviates a candidate's delimiter.
-
-			*neocomplcache-filter-converter_remove_next_keyword*
-converter_delimiter
-		The converter which removes matched next keyword part in a
-		candidate's word.
-
+				*neocomplcache-unite-source-neocomplcache*
+neocomplcache
+		Nominates neocomplcache completion candidates.  The kind is "completion".
+		This source is used in |<Plug>(neocomplcache_start_unite_complete)|.
+>
+		imap <C-k>  <Plug>(neocomplcache_start_unite_complete)
+		imap <C-q>  <Plug>(neocomplcache_start_unite_quick_match)
+<
 ==============================================================================
 CREATE SOURCE					*neocomplcache-create-source*
 
@@ -1346,8 +1313,8 @@ rank			Number		(Optional)
 			If filetype attribute is empty : 10
 			Else : 100
 
-			*neocomplcache-source-attribute-min_pattern_length*
-min_pattern_length
+			*neocomplcache-source-attribute-required_pattern_length*
+required_pattern_length
 			Number		(Optional)
 			Required pattern length fror completion.
 
@@ -1355,15 +1322,6 @@ min_pattern_length
 			If kind attribute is "keyword" :
 			    |g:neocomplcache_auto_completion_start_length|
 			Else : 0
-
-			*neocomplcache-source-attribute-max_candidates*
-max_candidates
-			Number		(Optional)
-			The maximum number of candidates.
-
-			This attribute is optional; if it is not given,
-			0 is used as the default value.  This means
-			maximum number is infinity.
 
 					*neocomplcache-source-attribute-hooks*
 hooks			Dictionary		(Optional)
@@ -1388,62 +1346,6 @@ hooks			Dictionary		(Optional)
 				*neocomplcache-source-attribute-finalize*
 			Note finalize() attribute is obsolete interface for
 			finalization.
-
-			*neocomplcache-source-attribute-hooks-on_post_filter*
-			on_post_filter
-			Called after the filters to narrow down the
-			candidates.  This is used to set attributes. This
-			filters is to avoid adversely affecting the
-			performance.
-			This function takes {context} as its parameters.
-
-			*neocomplcache-source-attribute-get_complete_position*
-get_complete_position	Function	(Optional)
-			This function takes {context} as its
-			parameter and returns complete position in current
-			line.
-			Here, {context} is the context information when the
-			source is called(|neocomplcache-notation-{context}|).
-			If you omit it, neocomplcache will use the position
-			using |g:neocomplcache_keyword_patterns|.
-			Note get_keyword_pos() is obsolete interface for
-			get complete position.
-
-			*neocomplcache-source-attribute-gather_candidates*
-gather_candidates	Function	(Required)
-			This function is called in gathering candidates.  If
-			you enabled fuzzy completion by
-			|g:neocomplcache_enable_fuzzy_completion| , this
-			function is called whenever the input string is
-			changed.  This function takes {context} as its
-			parameter and returns a list of {candidate}.
-			Here, {context} is the context information when the
-			source is called(|neocomplcache-notation-{context}|).
-			Note: get_complete_words() and get_keyword_list() are
-			obsolete interface for gather candidates.
-			Note: |neocomplcache-filters| feature is disabled for
-			compatibility in neocomplcache ver.8.0. You should use
-			new interface in neocomplcache ver.8.1.
-
-{context}				*neocomplcache-notation-{context}*
-			A dictionary to give context information.
-			The followings are the primary information.
-			The global context information can be acquired
-			by |neocomplcache#get_context()|.
-
-			input			(String)
-				The input string of current line.
-
-			complete_pos		(Number)
-				The complete position of current source.
-
-			complete_str		(String)
-				The complete string of current source.
-
-			source__{name}		(Unknown)	(Optional)
-				Additional source information.
-				Note: Recommend sources save
-				variables instead of s: variables.
 
 ------------------------------------------------------------------------------
 CANDIDATE ATTRIBUTES			*neocomplcache-candidate-attributes*
@@ -1484,55 +1386,8 @@ neocomplcache__refresh	Number		(Optional)
 			If it is non-zero, neocomplcache refresh
 			automatically.
 
-CONTEXT						*neocomplcache-context*
-
-==============================================================================
-CREATE FILTER					*neocomplcache-create-filter*
-
-The files in autoload/neocomplcache/filters are automatically loaded and it
-calls neocomplcache#filters#{filter_name}#define() whose return value is the
-filter.  Each return value can be a list so you can return an empty list to
-avoid adding undesirable filters.  To add your own filters dynamically, you
-can use |neocomplcache#define_filter()|.
-
-------------------------------------------------------------------------------
-FILTER ATTRIBUTES			*neocomplcache-filter-attributes*
-
-
-					*neocomplcache-filter-attribute-name*
-name			String		(Required)
-			The filter name.
-
-					*neocomplcache-filter-attribute-filter*
-filter			Function		(Required)
-			The filter function.  This function takes {context} as
-			its parameter and returns a list of {candidate}.
-			The specification of the parameters and the
-			returned value is same as
-			|neocomplcache-source-attribute-gather_candidates|.
-
-					*neocomplcache-filter-attribute-description*
-description		String		(Optional)
-			The filter description string.
-
-==============================================================================
-UNITE SOURCES					*neocomplcache-unite-sources*
-
-				*neocomplcache-unite-source-neocomplcache*
-neocomplcache
-		Nominates neocomplcache completion candidates.  The kind is "completion".
-		This source is used in |<Plug>(neocomplcache_start_unite_complete)|.
->
-		imap <C-k>  <Plug>(neocomplcache_start_unite_complete)
-		imap <C-q>  <Plug>(neocomplcache_start_unite_quick_match)
-<
 ==============================================================================
 FAQ						*neocomplcache-faq*
-
-Q: My customization for neocomplcache is invalid. Why?
-
-A: User customization for neocomplcache must be set before initialization of
-neocomplcache. For example: |neocomplcache#custom_source()|
 
 Q: Is there a way to control the colors used for popup menu using highlight
 groups?:
@@ -1593,7 +1448,22 @@ But you can use |unite.vim| instead to use quick match.
 
 Q: How can I change the order of candidates? :
 
-A: Todo.
+A: The default compare function is rank order.  It sorts rank order and
+alphabetical order.  If you select candidates, the candidate's rank will be
+high.  To change compare function, you can change
+|g:neocomplcache_compare_function| value.
+Note: To use rank feature, your Vim's version must be 7.3.549 or above.
+>
+	let g:neocomplcache_compare_function = 'neocomplcache#compare_word'
+<
+To make new compare function, please refer |g:neocomplcache_compare_function|.
+
+The built-in compare functions:
+	neocomplcache#compare_rank        : Rank order (default)
+	neocomplcache#compare_word        : Alphabetical order
+	neocomplcache#compare_human       : Human order(slow)
+	neocomplcache#compare_nothing     : Do not sort
+
 
 Q: An input problem occurred in using uim-skk or other IMEs:
 
@@ -1733,11 +1603,13 @@ https://github.com/Shougo/neocomplcache-rsense
 Q: I want to use jedi omni_complete.
 https://github.com/davidhalter/jedi-vim
 
-A: Please set |g:neocomplcache_force_omni_patterns| as below.
+A: Please set |g:neocomplcache_omni_functions| as below.
 >
-	autocmd FileType python setlocal omnifunc=jedi#complete
+	if !exists('g:neocomplcache_omni_functions')
+	    let g:neocomplcache_omni_functions = {}
+	endif
+	let g:neocomplcache_omni_functions.python = 'jedi#complete'
 	let g:jedi#popup_on_dot = 0
-	let g:neocomplcache_force_omni_patterns.python = '[^. \t]\.\w*'
 <
 Q: Candidates are not found in heavy completion(neco-look, etc).
 
@@ -1774,27 +1646,6 @@ it is too heavy.
 Q: I want to use Pydiction with neocomplcache.
 A: You should set |g:neocomplcache_dictionary_filetype_lists|.
 neocomplcache can load Pydiction dictionary file.
-
-Q: Why neocomplcache uses if_lua? Many people may not be able to use it
-because they do not have the root privilege to recompile vim.
-A:
-Because:
- 1. Pyhon interface is not available in every Vim environment. For example,
- Android, iOS, non configured Vim,...
- 2. Incompatibility with Python2 and Python3. I must rewrite for it.
- 3. Loading Python interface is slow(10~20ms). But loading Lua interface is
- too fast(270ns).
- 4. Python2 and Python3 is not loaded at same time in Unix environment.
- 5. Python is too big.
- 6. Python interface is slow than Lua interface(almost twice).
- 7. Lua interface is stable(no crashed in latest Vim).
- 8. Using C module(like vimproc, YouCompleteMe) is hard to compile in Windows
- environment.
- 9. Using both Python and C like YouCompleteMe is too unstable. Your Vim may
- be crash or happen a mysterious error.
- 10. To build if_lua is easy.
- 11. I think if_lua is the second level language in Vim(The first is Vim
- script).
 
 ==============================================================================
 TODO						*neocomplcache-todo*

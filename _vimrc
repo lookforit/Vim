@@ -183,7 +183,7 @@ let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 " Define dictionary.
 " let g:neocomplcache_dictionary_filetype_lists = {
 " 			\ 'default' : '',
-" 			\ 'python'  : 'D:\Programe files\Vim\vimfiles\bundle\pydiction-1.2.1\complete-dict',  
+" 			\ 'python'  : 'D:\Programe files\Vim\vimfiles\bundle\pydiction-1.2.1\complete-dict', 
 " 			\ 'vimshell' : $HOME.'/.vimshell_hist',
 " 			\ 'scheme' : $HOME.'/.gosh_completions'
 " 			\ }
@@ -414,9 +414,8 @@ let g:jedi#auto_vim_configuration = 0
 let g:jedi#show_function_definition = "0"
 let g:jedi#popup_select_first = 0
 "Make jedi integreted  in NeoCompleteCache
-if !exists('g:neocomplcache_force_omni_patterns')
-    let g:neocomplcache_force_omni_patterns = {}
+if !exists('g:neocomplcache_omni_functions')
+    let g:neocomplcache_omni_functions = {}
 endif
-autocmd FileType python setlocal omnifunc=jedi#complete
-let g:jedi#popup_on_dot = 0
-let g:neocomplcache_force_omni_patterns.python = '[^. \t]\.\w*'
+let g:neocomplcache_omni_functions.python = 'jedi#complete'
+let g:jedi#popup_on_dot = 1
