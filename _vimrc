@@ -87,7 +87,7 @@ inoremap <s-l> <right>
 inoremap <s-j> <c-o>gj
 inoremap <s-k> <c-o>gk
 
-" 方便在Wrapped lines 之间移动
+" 方便在Wrapped lines 之间移动 
 nnoremap j gj
 nnoremap k gk
 
@@ -419,3 +419,7 @@ if !exists('g:neocomplcache_omni_functions')
 endif
 let g:neocomplcache_omni_functions.python = 'jedi#complete'
 let g:jedi#popup_on_dot = 1
+
+" For indent-guides
+let g:indent_guides_guide_size = 1
+nmap <Leader>ig :IndentGuidesToggle<CR> 
