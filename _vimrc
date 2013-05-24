@@ -130,6 +130,7 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'\' : '%%'
 map <a-m> :set nohlsearch<CR>
 map <a-n> :set hlsearch<CR>
 
+
 "增加visual模式下搜索选中部分功能(*向前，#向后):
 "通过vim-visual-star-search插件
 
@@ -285,8 +286,17 @@ endfunction
 "NERDTree中不显示的文件后缀名或目录名称：
 let NERDTreeIgnore=['\.uvopt$', '\~$','\.uvproj','\.dll','\makefile','\.svn','\.bak','\.dep','\.plg','\.taghl','\.out']
 
-"窗口全屏:
-map <a-F12> <Esc>:call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
+"窗口全屏&&调整状态栏:
+map <a-F12> <Esc>:call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<CR> :call ToggleStatusline()<CR>
+
+" 根据当前状态打开或关闭状态栏
+function! ToggleStatusline()
+    if &ls==0
+	:set laststatus=2
+    else
+	:set laststatus=0
+    endif
+endfunction
 
 "Cscope
 "查找声明
@@ -308,7 +318,6 @@ nmap <C-Space>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 
 
 "对 txt 文本文件的特殊处理(让其易用VIMIM输入法):
-" autocmd FileType txt <buffer=abuf> set laststatus=0
 autocmd FileType txt  :NeoComplCacheDisable	
 autocmd FileType txt set completeopt=longest
 let g:vimim_cloud='sogou'
