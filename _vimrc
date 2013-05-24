@@ -339,6 +339,9 @@ let g:pydiction_location = 'D:\Programe files\Vim\vimfiles\bundle\pydiction-1.2.
 "Python Mode 设置: 
 noremap <Leader>pp :PyLint<CR>  
 noremap <Leader>pc :PyLintAuto<CR>
+" <ctrl-shift-sapce>绑定到RopeCodeAssist，而不是<ctrl-space>
+let g:pymode_rope_map_space = 0
+imap <cs-space> <C-R>=RopeCodeAssistInsertMode()<CR>
 let g:pymode_lint_write=0 		"写入时不检查
 "转到定义快捷键
 autocmd FileType python nmap <buffer> <C-]> :RopeGotoDefinition<CR> 
