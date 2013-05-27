@@ -170,8 +170,8 @@ let g:acp_enableAtStartup = 0
 let g:neocomplcache_enable_at_startup = 1
 "select first:
 let g:neocomplcache_enable_auto_select=0
-"Enable fuzzy match:
-let g:neocomplcache_enable_fuzzy_completion=1
+"Fuzzy match setting(fuzzy enabled default in V8.1, here to show fewer candidates,):
+call neocomplcache#custom_source('_', 'matchers', ['matcher_head'])
 " Use smartcase.
 let g:neocomplcache_enable_smart_case = 1
 " Use camel case completion.
