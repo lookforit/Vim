@@ -164,8 +164,6 @@ let g:tagbar_width = 30
 
 
 "NeoCompleteCache :
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
 " Use neocomplcache.
 let g:neocomplcache_enable_at_startup = 1
 "select first:
@@ -210,7 +208,7 @@ inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y>  neocomplcache#close_popup()
 inoremap <expr><C-e>  neocomplcache#cancel_popup()
 
-"Enter select items:
+"Space to select items:
 inoremap <expr><space>  pumvisible() ? neocomplcache#close_popup()  : "\<SPACE>"
 "Caching everywhere:
 noremap <Leader>neo :NeoComplCacheCachingBuffer<CR>:NeoComplCacheCachingTags<CR>
@@ -226,9 +224,6 @@ let g:neocomplcache_use_vimproc=1
 "let g:neocomplcache_enable_cursor_hold_i = 1
 " Or set this.
 "let g:neocomplcache_enable_insert_char_pre = 1
-
-" AutoComplPop like behavior.
-"let g:neocomplcache_enable_auto_select = 1
 
 " Shell like behavior(not recommended).
 "set completeopt+=longest
