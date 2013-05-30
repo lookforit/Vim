@@ -108,7 +108,7 @@ map <c-CR>  :put=''<CR>
 nnoremap Y y$
 
 " <C-p> paste the yank word, not the deleted
-nnoremap <silent> <C-p> "0p<CR>
+nnoremap <silent> <C-p> "0p<CR>k
 
 "引入SmartClose插件，快捷关闭buffer：
 let g:smartclose_set_default_mapping = 0
