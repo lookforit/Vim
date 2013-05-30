@@ -107,6 +107,9 @@ map <c-CR>  :put=''<CR>
 " Yank from the cursor to the end of the line, to be consistent with C and D.
 nnoremap Y y$
 
+" <C-p> paste the yank word, not the deleted
+nnoremap <silent> <C-p> "0p<CR>
+
 "引入SmartClose插件，快捷关闭buffer：
 let g:smartclose_set_default_mapping = 0
 nnoremap <silent><m-q> :SmartClose<CR>
