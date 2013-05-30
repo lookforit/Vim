@@ -123,9 +123,6 @@ noremap <BS> :cd..<CR>:cd<CR>
 "复制到剪贴板:
 vmap <F3> "+y
 
-"删除或复制到括号中的内容，Shift包含括号本身：
-let g:yankring_zap_keys = 'f'
-
 "通过"%%" 快捷输入当前buffer目录(windows版本，linux下需将"\"替换为"/")
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'\' : '%%'
 
