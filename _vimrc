@@ -211,7 +211,7 @@ inoremap <expr><C-e>  neocomplcache#cancel_popup()
 "Space to select items:
 inoremap <expr><space>  pumvisible() ? neocomplcache#close_popup()  : "\<SPACE>"
 "Caching everywhere:
-noremap <Leader>neo :NeoComplCacheCachingBuffer<CR>:NeoComplCacheCachingTags<CR>
+noremap <Leader>neo :NeoComplCacheCachingBuffer<CR>:NeoComplCacheCachingTags<CR>:NeoComplCacheCachingSyntax<CR>
 " using vimproc
 let g:neocomplcache_use_vimproc=1
 
