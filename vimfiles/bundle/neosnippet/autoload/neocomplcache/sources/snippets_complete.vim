@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: snippets_complete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 16 Mar 2013.
+" Last Modified: 04 Jun 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -30,6 +30,8 @@ set cpo&vim
 let s:source = {
       \ 'name' : 'snippets_complete',
       \ 'kind' : 'complfunc',
+      \ 'min_pattern_length' :
+      \     g:neocomplcache_auto_completion_start_length,
       \}
 
 function! s:source.initialize() "{{{
@@ -38,6 +40,8 @@ function! s:source.initialize() "{{{
         \ g:neocomplcache_source_rank, 'snippets_complete', 8)
   call neocomplcache#set_completion_length('snippets_complete',
         \ g:neocomplcache_auto_completion_start_length)
+  call neosnippet#util#set_default(
+        \ 'g:neosnippet#enable_preview', 0)
 endfunction"}}}
 
 function! s:source.get_keyword_pos(cur_text) "{{{
@@ -57,13 +61,12 @@ function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str) "{{{
 
   for snippet in list
     let snippet.dup = 1
-    let snippet.neocomplcache__convertable = 0
 
-    let snippet.kind = get(snippet,
-          \ 'neocomplcache__refresh', 0) ? '~' : ''
     let snippet.menu = neosnippet#util#strwidthpart(
           \ snippet.menu_template, winwidth(0)/3)
-    let snippet.info = snippet.snip
+    if g:neosnippet#enable_preview
+      let snippet.info = snippet.snip
+    endif
   endfor
 
   return list
@@ -76,25 +79,6 @@ function! s:keyword_filter(snippets, cur_keyword_str) "{{{
   " Use default filter.
   let list = neocomplcache#keyword_filter(
         \ values(a:snippets), a:cur_keyword_str)
-  for snippet in list
-    " reset refresh flag.
-    let snippet.neocomplcache__refresh = 0
-    let snippet.rank = 5
-  endfor
-
-  if len(a:cur_keyword_str) > 1 && a:cur_keyword_str =~ '^\h\w*$'
-    " Use partial match by word.
-    let partial_list = filter(values(a:snippets),
-          \  printf('stridx(v:val.word, %s) > 0',
-          \      string(a:cur_keyword_str)))
-    for snippet in partial_list
-      " Set refresh flag.
-      let snippet.neocomplcache__refresh = 1
-      let snippet.rank = 0
-    endfor
-
-    let list += partial_list
-  endif
 
   " Add cur_keyword_str snippet.
   if has_key(a:snippets, a:cur_keyword_str)
@@ -113,27 +97,6 @@ endfunction"}}}
 
 function! neocomplcache#sources#snippets_complete#define() "{{{
   return s:source
-endfunction"}}}
-
-function! s:compare_words(i1, i2)
-  return a:i1.menu - a:i2.menu
-endfunction
-
-function! neocomplcache#sources#snippets_complete#expandable() "{{{
-  return neosnippet#expandable()
-endfunction"}}}
-function! neocomplcache#sources#snippets_complete#force_expandable() "{{{
-  return neosnippet#expandable()
-endfunction"}}}
-function! neocomplcache#sources#snippets_complete#jumpable() "{{{
-  return neosnippet#jumpable()
-endfunction"}}}
-
-function! neocomplcache#sources#snippets_complete#get_snippets() "{{{
-  return neosnippet#get_snippets()
-endfunction"}}}
-function! neocomplcache#sources#snippets_complete#get_snippets_dir() "{{{
-  return neosnippet#get_snippets_directory()
 endfunction"}}}
 
 let &cpo = s:save_cpo
