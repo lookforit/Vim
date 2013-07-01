@@ -154,6 +154,12 @@ highlight def link notesLastEdited LineNr
 
 " }}}1
 
+" 数字
+syn match Numbers "\d\(\.\d\+\)\?"
+syn match Numbers "\d"
+highlight Numbers guifg=#ff6050       
+
+
 " Set the currently loaded syntax mode.
 let b:current_syntax = 'notes'
 
