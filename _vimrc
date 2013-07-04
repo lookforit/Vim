@@ -164,11 +164,14 @@ let g:tagbar_width = 30
 
 
 "NeoCompleteCache :
+call neocomplcache#custom_source('look', 'min_pattern_length', 2)
 " Use neocomplcache.
 let g:neocomplcache_enable_at_startup = 1
 "select first:
 let g:neocomplcache_enable_auto_select=0
 "Fuzzy match setting(fuzzy enabled default in V8.1, here to show fewer candidates,):
+let g:neocomplcache_enable_fuzzy_completion=1
+let g:neocomplcache_fuzzy_completion_start_length=3
 call neocomplcache#custom_source('_', 'matchers', ['matcher_head'])
 " Use smartcase.
 let g:neocomplcache_enable_smart_case = 1
@@ -426,6 +429,7 @@ if !exists('g:neocomplcache_omni_functions')
 endif
 let g:neocomplcache_omni_functions.python = 'jedi#complete'
 let g:jedi#popup_on_dot = 1
+let g:jedi#related_names_command = "<leader>m"
 
 " For indent-guides
 let g:indent_guides_guide_size = 1
