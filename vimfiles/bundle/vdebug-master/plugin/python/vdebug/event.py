@@ -9,21 +9,24 @@ class Dispatcher:
         self.runner = runner
 
     def visual_eval(self):
-        event = VisualEvalEvent()
-        return event.execute(self.runner)
+        if self.runner.is_alive():
+            event = VisualEvalEvent()
+            return event.execute(self.runner)
 
     def eval_under_cursor(self):
-        event = CursorEvalEvent()
-        return event.execute(self.runner)
+        if self.runner.is_alive():
+            event = CursorEvalEvent()
+            return event.execute(self.runner)
 
     def by_position(self):
-        event = self._get_event_by_position()
-        if event is not None:
-            return event.execute(self.runner)
-        else:
-            vdebug.log.Log("No executable event found at current cursor position",\
-                    vdebug.log.Logger.DEBUG)
-            return False
+        if self.runner.is_alive():
+            event = self._get_event_by_position()
+            if event is not None:
+                return event.execute(self.runner)
+            else:
+                vdebug.log.Log("No executable event found at current cursor position",\
+                        vdebug.log.Logger.DEBUG)
+                return False
 
     def _get_event_by_position(self):
         buf_name = vim.current.buffer.name
@@ -74,7 +77,7 @@ class CursorEvalEvent(Event):
     var_regex = {
         "default" : "^[a-zA-Z_]",
         "ruby" : "^[$@a-zA-Z_]",
-        "php" : "^\$",
+        "php" : "^[\$A-Z]",
         "perl" : "^[$@%]"
     }
 
@@ -92,7 +95,7 @@ class CursorEvalEvent(Event):
         var = ""
         linelen = len(line)
 
-        for i in range(colno,linelen-1):
+        for i in range(colno,linelen):
             char = line[i]
             if p.match(char):
                 var += char
@@ -138,7 +141,7 @@ class StackWindowLineSelectEvent(Event):
         filename_pos = line.find(" @ ") + 3
         file_and_line = line[filename_pos:]
         line_pos = file_and_line.rfind(":")
-        file = vdebug.util.FilePath(file_and_line[:line_pos])
+        file = vdebug.util.LocalFilePath(file_and_line[:line_pos])
         lineno = file_and_line[line_pos+1:]
         runner.ui.sourcewin.set_file(file)
         runner.ui.sourcewin.set_line(lineno)
@@ -156,7 +159,7 @@ class WatchWindowPropertyGetEvent(Event):
 
         eq_index = line.find('=')
         if eq_index == -1:
-            raise EventError, "Cannot read the selected property"
+            raise EventError("Cannot read the selected property")
 
         name = line[pointer_index+step:eq_index-1]
         context_res = runner.api.property_get(name)
@@ -210,7 +213,7 @@ class WatchWindowContextChangeEvent(Event):
 
         if tab_end_pos == -1 or \
                 tab_start_pos == -1:
-            raise EventError, "Failed to find context name under cursor"
+            raise EventError("Failed to find context name under cursor")
 
         context_name = line[tab_start_pos:tab_end_pos]
         vdebug.log.Log("Context name: %s" % context_name,\
@@ -223,12 +226,12 @@ class WatchWindowContextChangeEvent(Event):
                 runner.context_names,context_name)
 
         if context_id == -1:
-            raise EventError, "Could not resolve context name"
+            raise EventError("Could not resolve context name")
             return False
         else:
             runner.get_context(context_id)
             return True
-            
+
     def __get_word_end(self,line,column):
         tab_end_pos = -1
         line_len = len(line)

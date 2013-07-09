@@ -82,7 +82,7 @@ class Response:
 class ContextNamesResponse(Response):
     def names(self):
         names = {}
-        for c in self.as_xml().getchildren():
+        for c in list(self.as_xml()):
             names[int(c.get('id'))] = c.get('name')
         return names
 
@@ -96,7 +96,7 @@ class StackGetResponse(Response):
     """Response object used by the stack_get command."""
 
     def get_stack(self):
-        return self.as_xml().getchildren()
+        return list(self.as_xml())
 
 class ContextGetResponse(Response):
     """Response object used by the context_get command.
@@ -109,7 +109,7 @@ class ContextGetResponse(Response):
         self.properties = []
 
     def get_context(self):
-        for c in self.as_xml().getchildren():
+        for c in list(self.as_xml()):
             self.create_properties(ContextProperty(c))
 
         return self.properties
@@ -124,15 +124,15 @@ class EvalResponse(ContextGetResponse):
     def __init__(self,response,cmd,cmd_args,api):
         try:
             ContextGetResponse.__init__(self,response,cmd,cmd_args,api)
-        except DBGPError, e:
+        except DBGPError as e:
             if int(e.args[1]) == 206:
-                raise EvalError
+                raise EvalError()
             else:
                 raise e
 
     def get_context(self):
         code = self.get_code()
-        for c in self.as_xml().getchildren():
+        for c in list(self.as_xml()):
             self.create_properties(EvalProperty(c,code,self.api.language))
 
         return self.properties
@@ -347,7 +347,9 @@ class Api:
 
         The script is not terminated, but runs as normal
         from this point."""
-        return self.send_cmd('detach','',StatusResponse)
+        ret = self.send_cmd('detach','',StatusResponse)
+        self.conn.close()
+        return ret
 
     def breakpoint_set(self,cmd_args):
         """Set a breakpoint.
@@ -416,7 +418,7 @@ class Connection:
             self.sock.settimeout(None)
         except socket.timeout:
             serv.close()
-            raise TimeoutError,"Timeout waiting for connection"
+            raise TimeoutError("Timeout waiting for connection")
         except:
             serv.close()
             raise
@@ -447,6 +449,8 @@ class Connection:
     def close(self):
         """Close the connection."""
         if self.sock != None:
+            vdebug.log.Log("Closing the socket",\
+                            vdebug.log.Logger.DEBUG)
             self.sock.close()
             self.sock = None
         self.isconned = 0
@@ -458,7 +462,7 @@ class Connection:
             c = self.sock.recv(1)
             if c == '':
                 self.close()
-                raise EOFError, 'Socket Closed'
+                raise EOFError('Socket Closed')
             if c == '\0':
                 return int(length)
             if c.isdigit():
@@ -470,7 +474,7 @@ class Connection:
             c = self.sock.recv(1)
             if c == '':
                 self.close()
-                raise EOFError, 'Socket Closed'
+                raise EOFError('Socket Closed')
             if c == '\0':
                 return
 
@@ -484,7 +488,7 @@ class Connection:
             buf = self.sock.recv(to_recv)
             if buf == '':
                 self.close()
-                raise EOFError, 'Socket Closed'
+                raise EOFError('Socket Closed')
             to_recv -= len(buf)
             body = body + buf
         return body
@@ -597,7 +601,7 @@ class ContextProperty:
         if self.has_children:
             idx = 0
             tagname = '%sproperty' % self.ns
-            children = node.getchildren()
+            children = list(node)
             if children is not None:
                 for c in children:
                     if c.tag == tagname:

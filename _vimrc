@@ -355,11 +355,11 @@ autocmd FileType python nmap <buffer> <F5> :w<CR>:!python.exe %<CR>
 let g:vdebug_keymap = {
 			\    "run" : "<S-F5>",
 			\    "run_to_cursor" : "<S-F1>",
-			\    "step_over" : "<S-F2>",
-			\    "step_into" : "<S-F3>",
+			\    "step_over" : "<S-F7>",
+			\    "step_into" : "<S-F8>",
 			\    "step_out" : "<S-F4>",
 			\    "close" : "<S-F6>",
-			\    "detach" : "<S-F7>",
+			\    "detach" : "<S-F2>",
 			\    "set_breakpoint" : "<S-F9>",
 			\    "get_context" : "<S-F11>",
 			\    "eval_under_cursor" : "<S-F12>",
@@ -429,7 +429,7 @@ if !exists('g:neocomplcache_omni_functions')
 endif
 let g:neocomplcache_omni_functions.python = 'jedi#complete'
 let g:jedi#popup_on_dot = 1
-let g:jedi#related_names_command = "<leader>m"
+let g:jedi#related_names_command = "<leader>rl"
 
 " For indent-guides
 let g:indent_guides_guide_size = 1

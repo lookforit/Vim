@@ -29,38 +29,63 @@ class Runner:
         If either of these are already open, the current
         connection or vdebug.ui is used.
         """
-        vdebug.opts.Options.set(vim.eval('g:vdebug_options'))
-        if vdebug.opts.Options.isset('debug_file'):
-            vdebug.log.Log.set_logger(vdebug.log.FileLogger(\
-                    vdebug.opts.Options.get('debug_file_level'),\
-                    vdebug.opts.Options.get('debug_file')))
-        self.listen(\
-                vdebug.opts.Options.get('server'),\
-                vdebug.opts.Options.get('port',int),\
-                vdebug.opts.Options.get('timeout',int))
+        try:
+            if self.ui.is_modified():
+                self.ui.error("Modified buffers must be saved before debugging")
+                return
+            vdebug.opts.Options.set(vim.eval('g:vdebug_options'))
+            
+            if vdebug.opts.Options.isset('debug_file'):
+                vdebug.log.Log.set_logger(vdebug.log.FileLogger(\
+                        vdebug.opts.Options.get('debug_file_level'),\
+                        vdebug.opts.Options.get('debug_file')))
+            self.listen(\
+                    vdebug.opts.Options.get('server'),\
+                    vdebug.opts.Options.get('port',int),\
+                    vdebug.opts.Options.get('timeout',int))
 
-        self.ui.open()
-        self.keymapper.map()
-        self.ui.set_listener_details(\
-                vdebug.opts.Options.get('server'),\
-                vdebug.opts.Options.get('port'),\
-                vdebug.opts.Options.get('ide_key'))
+            self.ui.open()
+            self.keymapper.map()
+            self.ui.set_listener_details(\
+                    vdebug.opts.Options.get('server'),\
+                    vdebug.opts.Options.get('port'),\
+                    vdebug.opts.Options.get('ide_key'))
 
-        addr = self.api.conn.address
-        vdebug.log.Log("Found connection from " + str(addr),vdebug.log.Logger.INFO)
-        self.ui.set_conn_details(addr[0],addr[1])
-        self.breakpoints.link_api(self.api)
+            addr = self.api.conn.address
+            vdebug.log.Log("Found connection from " + str(addr),vdebug.log.Logger.INFO)
+            self.ui.set_conn_details(addr[0],addr[1])
 
-        cn_res = self.api.context_names()
-        self.context_names = cn_res.names()
-        vdebug.log.Log("Available context names: %s" %\
-                str(self.context_names),vdebug.log.Logger.DEBUG)
+            self.set_features()
+            self.breakpoints.update_lines(self.ui.get_breakpoint_sign_positions())
+            self.breakpoints.link_api(self.api)
 
-        if vdebug.opts.Options.get('break_on_open',int) == 1:
-            status = self.api.step_into()
-        else:
-            status = self.api.run()
-        self.refresh(status)
+            cn_res = self.api.context_names()
+            self.context_names = cn_res.names()
+            vdebug.log.Log("Available context names: %s" %\
+                    str(self.context_names),vdebug.log.Logger.DEBUG)
+
+            if vdebug.opts.Options.get('break_on_open',int) == 1:
+                status = self.api.step_into()
+            else:
+                status = self.api.run()
+            self.refresh(status)
+        except Exception:
+            self.close()
+            raise
+
+    def set_features(self):
+        """Evaluate vim dictionary of features and pass to debugger.
+
+        Errors are caught if the debugger doesn't like the feature name or
+        value. This doesn't break the loop, so multiple features can be set
+        even in the case of an error."""
+        features = vim.eval('g:vdebug_features')
+        for name, value in features.iteritems():
+            try:
+                self.api.feature_set(name, value)
+            except vdebug.dbgp.DBGPError as e:
+                error_str = "Failed to set feature %s: %s" %(name,str(e.args[0]))
+                self.ui.error(error_str)
 
     def refresh(self,status):
         """The main action performed after a deubugger step.
@@ -79,7 +104,7 @@ class Runner:
                 self.ui.statuswin.set_status("stopped")
                 self.ui.say("Debugging session has ended")
                 self.close_connection(False)
-                if vdebug.opts.Options.get('continuous_mode',bool):
+                if vdebug.opts.Options.get('continuous_mode', int) != 0:
                     self.open()
                     return
             else:
@@ -88,7 +113,7 @@ class Runner:
                 stack_res = self.update_stack()
                 stack = stack_res.get_stack()
 
-                self.cur_file = vdebug.util.FilePath(stack[0].get('filename'))
+                self.cur_file = vdebug.util.RemoteFilePath(stack[0].get('filename'))
                 self.cur_lineno = stack[0].get('lineno')
 
                 vdebug.log.Log("Moving to current position in source window")
