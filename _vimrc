@@ -40,7 +40,7 @@ function MyDiff()
 	else
 		let cmd = $VIMRUNTIME . '\diff'
 	endif
-	silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
+	silent execute '!diff -a ' . opt . v:fname_in . ' ' . v:fname_new . ' > ' . v:fname_out
 endfunction
 source $VIMRUNTIME/macros/matchit.vim
 autocmd BufEnter *.m    compiler mlint
@@ -337,7 +337,7 @@ let g:pydiction_location = 'D:\Programe files\Vim\vimfiles\bundle\pydiction-1.2.
 "Python Mode 设置: 
 noremap <Leader>pp :PyLint<CR>  
 noremap <Leader>pc :PyLintAuto<CR>
-" <ctrl-shift-sapce>绑定到RopeCodeAssist，而不是<ctrl-space>
+" <ctrl-shift-space>绑定到RopeCodeAssist，而不是<ctrl-space>
 let g:pymode_rope_map_space = 0
 imap <cs-space> <C-R>=RopeCodeAssistInsertMode()<CR>
 let g:pymode_lint_write=0 		"写入时不检查
